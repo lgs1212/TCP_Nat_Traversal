@@ -1,52 +1,26 @@
-#include "../include/nattraversal/NatTraversalClient.h"
-#include "../include/socket/ClientSocket.h"
+#include "../include/natchecker/NatCheckerClient.h"
 
 #include <iostream>
-#include <string>
-#include <thread>
 
 using namespace std;
 using namespace Lib;
 
-NatTraversalClient *ext_client;
-
-void echoSocketAddr(ClientSocket *socket){
-	cout << "ip: " << socket->getAddr() << endl;
-	cout << "port: " << socket->getPort() << endl;
-	cout << "peer ip: " << socket->getPeerAddr() << endl;
-	cout << "peer port: " << socket->getPeerPort() << endl;
-}
-
-void func(){
-	ClientSocket *socket;
-	socket = ext_client->waitForPeerHost();
-	
-	if(socket == NULL){
-		cout << "waitForPeerHost return NULL" << endl;
-		return;
-	}
-	
-	echoSocketAddr(socket);
-}
-
 int main(int argc,char *argv[]){
-	NatTraversalClient client("client1");
+	Object::port_type local_port = 8888;
+	Object::port_type server_port = 8888;
+
+	NatCheckerClient client("client","xxx.xxx.xxx.xxx",local_port);
 	
-	if(!client.enroll("172.16.1.222",9999))
+	if(!client.connect("xxx.xxx.xxx.xxx",server_port)){
+		cout << "can not connect to server" << endl;
 		return 1;
-		
-	ext_client = &client;
-	
-	thread(func).detach();
-	
-	ClientSocket *socket = client.connectToPeerHost("client2");
-	
-	if(socket == NULL){
-		cout << "connectToPeerHost return NULL" << endl;
-		return 0;
 	}
+		
+	nat_type natType = client.getNatType();
 	
-	echoSocketAddr(socket);
+	cout << "has NAT: " << natType.haveNat() << endl;
+	cout << natType.getStringMapType() << endl;
+	cout << natType.getStringFilterType() << endl;
 
     return 0;
 }

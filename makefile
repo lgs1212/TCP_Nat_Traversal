@@ -152,13 +152,13 @@ mytest.o: mytest.cpp \
 	g++ -c mytest.cpp -std=c++11
 
 client.o: main/client.cpp \
-	$(sock_inc_dir)/ClientSocket.h $(icf_client_socket) \
-	$(nat_traversal_inc_dir)/NatTraversalClient.h $(icf_nat_traversal_client)
-	g++ -c main/client.cpp -std=c++11
+	$(nat_checker_inc_dir)/NatCheckerClient.h $(icf_nat_checker_client)
+	g++ -c main/client.cpp
 	
 server.o: main/server.cpp \
-	$(nat_traversal_inc_dir)/NatTraversalServer.h $(icf_nat_traversal_server)
-	g++ -c main/server.cpp
+	$(nat_checker_inc_dir)/NatCheckerServer.h $(icf_nat_checker_server) \
+	database/DefaultDataBase.h $(icf_default_database)
+	g++ -c main/server.cpp -std=c++11
 
 ########################################### object
 
